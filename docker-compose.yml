@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  vntrader:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DELTA_API_KEY=${DELTA_API_KEY}
+      - DELTA_API_SECRET=${DELTA_API_SECRET}
+      - PAPER_MODE=true
+    volumes:
+      - ./backend/.env:/app/.env
+      - ./logs:/app/logs
+    restart: unless-stopped
+    
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl
+    depends_on:
+      - vntrader
+    restart: unless-stopped

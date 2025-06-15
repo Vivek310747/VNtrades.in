@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: vntrader-backend
+    env: python
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: DELTA_API_KEY
+        sync: false
+      - key: DELTA_API_SECRET
+        sync: false
+      - key: PAPER_MODE
+        value: "true"
+        
+  - type: static
+    name: vntrader-frontend
+    buildCommand: "npm install && npm run build"
+    staticPublishPath: "./dist"
+    envVars:
+      - key: VITE_API_URL
+        value: "https://vntrader-backend.onrender.com"
